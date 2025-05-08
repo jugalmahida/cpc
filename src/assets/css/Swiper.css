@@ -1,0 +1,12 @@
+@media (max-width: 640px) {
+    .swiper-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .swiper-slide {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}

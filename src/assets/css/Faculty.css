@@ -1,0 +1,13 @@
+.course-card {
+      background: #ffffff;
+      box-shadow: 0px 10px 50px 5px rgba(0, 0, 0, 0.15);
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      position: relative; /* Ensure the hover effect is contained within the card */
+      overflow: hidden; /* Prevent the hover effect from spilling outside */
+    }
+    .course-card:hover {
+      box-shadow: 0px 0px 20px 10px rgba(29, 86, 111, 0.25); /* Uniform shadow on all sides */
+      transform: translateY(-5px);
+      border: 2px solid #1A556F;
+    }
