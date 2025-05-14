@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { FaFilm, FaLaptopCode, FaMobileAlt, FaPalette, FaPlane,FaBusinessTime } from "react-icons/fa";
+import { FaFilm, FaLaptopCode, FaMobileAlt, FaPalette, FaPlane, FaBusinessTime } from "react-icons/fa";
 import "leaflet/dist/leaflet.css";
 
 // React GA 4 
@@ -40,6 +40,7 @@ import logo from "/cpclogo.png";
 
 import dataService from "../api/dataService"; // Import your dataService
 import AdmissionFloatingButtons from "../componets/AdminssionFloatingButtons";
+import AdmissionRegistrationFloatingButton from "../componets/AdmissionRegistrationFloatingButton";
 
 export default function Home() {
 
@@ -76,7 +77,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    
+
     if (location.pathname === "/") {
       const incrementVisitCount = async () => {
         try {
@@ -90,12 +91,12 @@ export default function Home() {
 
       // Check if the hostname is localhost or 127.0.0.1
       if (window.location.hostname !== "localhost" &&
-          window.location.hostname !== "127.0.0.1" &&
-          !sessionStorage.getItem('visitCounted')) {
+        window.location.hostname !== "127.0.0.1" &&
+        !sessionStorage.getItem('visitCounted')) {
         incrementVisitCount(); // Call the function only if not localhost
       }
 
-    } 
+    }
   }, [location.pathname]);
 
 
@@ -170,7 +171,8 @@ export default function Home() {
   return (
     <div className="relative bg-white m-0 p-0 overflow-x-hidden">
 
-      {/* <AdmissionFloatingButtons /> */}
+      <AdmissionFloatingButtons />
+      <AdmissionRegistrationFloatingButton />
 
       <Header transparent={true} />
 

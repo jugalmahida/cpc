@@ -14,7 +14,7 @@ const dataService = {
 
     getVisitCount: async () => {
         try {
-            const response = await apiClient.get('/visits/getCount');            
+            const response = await apiClient.get('/visits/getCount');
             return response.data;
         } catch (error) {
             console.error("Error getting visits:", error);
@@ -31,8 +31,8 @@ const dataService = {
             throw error;
         }
     },
-    
-    
+
+
     getAcademicData: async (id) => {
         try {
             const response = await apiClient.get(`/vertical/getVerticalByID/${id}`);
@@ -157,6 +157,17 @@ const dataService = {
     companyInquiry: async (formData) => {
         try {
             const response = await apiClient.post('/placement/companyInquiry', formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error creating inquiry:", error);
+            throw error.response.data; // Throw server response if available
+        }
+    },
+    examRegistration: async (formData) => {
+        try {
+            const response = await apiClient.post('/exam/create', formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
             return response.data;

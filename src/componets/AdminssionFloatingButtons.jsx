@@ -278,8 +278,8 @@ export default function AdmissionFloatingButtons() {
                 </ul>
 
                 {/* Registration Link Section */}
-                <div 
-                className="bg-slate-700 p-3 rounded-lg flex flex-col sm:flex-row items-center justify-between 
+                <div
+                  className="bg-slate-700 p-3 rounded-lg flex flex-col sm:flex-row items-center justify-between 
                 text-sm md:text-base mb-3"
                 > {/* Background and layout for the link */}
                   <span className="font-semibold text-gray-300 mb-1 sm:mb-0 mr-2">Registration Link:</span> {/* Text label */}
