@@ -266,7 +266,7 @@ const AdmissionRegistrationFloatingButton = () => {
                                                 <div className="text-gray-700 text-sm space-y-2">
                                                     <p>• Mandatory ₹1,000 entrance fee payment required</p>
                                                     <p>• This registration is for Department of Animation & School of Design courses only</p>
-
+                                                    <p>• Payment is non refundable</p>
                                                     <div className="pt-2">
                                                         <div className="flex flex-col gap-4">
                                                             {/* Payment Methods */}
