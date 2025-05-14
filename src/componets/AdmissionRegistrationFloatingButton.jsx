@@ -10,6 +10,7 @@ const AdmissionRegistrationFloatingButton = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedDepartment, setSelectedDepartment] = useState(null);
     const [selectedCourses, setSelectedCourses] = useState([]);
+    const [isSubmissionSuccess, setIsSubmissionSuccess] = useState(false);
 
     // Form Data & Errors
     const [formData, setFormData] = useState({
@@ -114,8 +115,8 @@ const AdmissionRegistrationFloatingButton = () => {
 
     const handleCourseSelect = (course) => {
         setSelectedCourses(prev => {
-            if (prev.includes(course)) return prev.filter(c => c !== course);
-            return prev.length < 2 ? [...prev, course] : prev;
+            if (prev.includes(course)) return []; // Deselect if already selected
+            return [course]; // Always replace with the new selection
         });
         setFormErrors(prev => ({ ...prev, courses: null }));
     };
@@ -132,13 +133,13 @@ const AdmissionRegistrationFloatingButton = () => {
         if (files) {
             const file = files[0];
             let error = '';
-            if (name === 'profilePhoto' && !isValidFile(file, ['image/jpeg', 'image/png'], 2)) {
-                error = 'Invalid image (JPG/PNG, max 2MB)';
-            } else if (name === 'marksheet' && !isValidFile(file, ['application/pdf'], 5)) {
-                error = 'Invalid PDF (max 5MB)';
+            if (name === 'profilePhoto' && !isValidFile(file, ['image/jpeg', 'image/png'], 1)) {
+                error = 'Invalid image (JPG/PNG, max 1MB)';
+            } else if (name === 'marksheet' && !isValidFile(file, ['application/pdf'], 1)) {
+                error = 'Invalid PDF (max 1MB)';
             }
             else if (name === 'entrancePaymentProof' && !isValidFile(file, ['image/jpeg', 'image/png', 'application/pdf'], 5)) {
-                error = 'Invalid file (JPG/PNG/PDF, max 5MB)';
+                error = 'Invalid file (JPG/PNG/PDF, max 1MB)';
             }
             setFormErrors(prev => ({ ...prev, [name]: error }));
             setFormData(prev => ({ ...prev, [name]: error ? null : file }));
@@ -163,8 +164,8 @@ const AdmissionRegistrationFloatingButton = () => {
         const errors = {};
         if (!formData.name.trim()) errors.name = 'Name is required';
         if (!isValidEmail(formData.email)) errors.email = 'Invalid email';
-        if (!isValidMobile(formData.mobile)) errors.mobile = 'Invalid mobile';
-        if (!formData.profileImage) errors.profilePhoto = 'Profile photo required';
+        if (!isValidMobile(formData.number)) errors.number = 'Invalid mobile';
+        if (!formData.profileImage) errors.profileImage = 'Profile photo required';
         if (!formData.pdf) errors.pdf = 'Marksheet required';
         if (!selectedDepartment) errors.departmentName = 'Please select a department';
         if (selectedCourses.length === 0) errors.courseName = 'Please select one course';
@@ -179,51 +180,35 @@ const AdmissionRegistrationFloatingButton = () => {
         setIsSubmitting(true);
         try {
             const formPayload = new FormData();
-
-            // Append all form fields with correct backend field names
             formPayload.append('tID', formData.tID);
             formPayload.append('name', formData.name);
-            formPayload.append('number', formData.mobile);
+            formPayload.append('number', formData.number);
             formPayload.append('email', formData.email);
             formPayload.append('gcasNumber', formData.gcasNumber);
             formPayload.append('profileImage', formData.profileImage);
             formPayload.append('pdf', formData.pdf);
-
-            // Department/Courses
             formPayload.append('departmentName', selectedDepartment.name);
-            formPayload.append('courseName', JSON.stringify(selectedCourses));
+            formPayload.append('courseName', selectedCourses[0] || '');
 
             await DataService.examRegistration(formPayload);
-            closeForm();
+
+            // Show success state instead of immediately closing
+            setIsSubmissionSuccess(true);
             ReactGA.event({ category: 'Admission', action: 'Form Submitted' });
+
+            // Set timeout to close after 5 seconds
+            setTimeout(() => {
+                closeForm();
+                setIsSubmissionSuccess(false); // Reset for next submission
+            }, 5000);
+
         } catch (error) {
             console.error('Submission error:', error);
         } finally {
             setIsSubmitting(false);
         }
     };
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     if (!validateForm()) return;
 
-    //     setIsSubmitting(true);
-    //     try {
-    //         const formPayload = new FormData();
-    //         for (const key in formData) {
-    //             if (formData[key]) formPayload.append(key, formData[key]);
-    //         }
-    //         formPayload.append('departmentName', selectedDepartment.name);
-    //         formPayload.append('courseName', JSON.stringify(selectedCourses));
-
-    //         await DataService.examRegistration(formPayload);
-    //         closeForm();
-    //         ReactGA.event({ category: 'Admission', action: 'Form Submitted' });
-    //     } catch (error) {
-    //         console.error('Submission error:', error);
-    //     } finally {
-    //         setIsSubmitting(false);
-    //     }
-    // };
 
     return (
         <>
@@ -238,7 +223,9 @@ const AdmissionRegistrationFloatingButton = () => {
                         className="relative bg-[#1e3f59] hover:bg-[#1A556F] text-white font-medium py-3 px-6 rounded-xl 
                         shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center text-sm md:text-base"
                     >
-                        <span className="relative z-10">Apply Now</span>
+                        <span className="relative z-10">Entrance Exam Registration
+
+                        </span>
                     </button>
                 </div>
             </div>
@@ -395,13 +382,13 @@ const AdmissionRegistrationFloatingButton = () => {
                                                         label: '12th Marksheet',
                                                         name: 'pdf',  // Match backend field name
                                                         accept: 'application/pdf',
-                                                        requirements: '(PDF, max 5MB)'
+                                                        requirements: '(PDF, max 1MB)'
                                                     },
                                                     {
                                                         label: 'Profile Photo',
                                                         name: 'profileImage',  // Match backend field name
                                                         accept: 'image/*',
-                                                        requirements: '(JPG/PNG, max 2MB)'
+                                                        requirements: '(JPG/PNG, max 1MB)'
                                                     },
                                                 ].map((file) => (
                                                     <div key={file.name} className="space-y-2">
@@ -459,7 +446,7 @@ const AdmissionRegistrationFloatingButton = () => {
                                                 {/* Course Selection */}
                                                 {selectedDepartment && (
                                                     <div className="space-y-2">
-                                                        <label className="block text-sm font-medium text-gray-700">Select Courses (Max 1) *</label>
+                                                        <label className="block text-sm font-medium text-gray-700">Select Course *</label>
                                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                             {selectedDepartment.courses.map((course) => (
                                                                 <button
@@ -470,7 +457,7 @@ const AdmissionRegistrationFloatingButton = () => {
                                                                         ? 'border-[#1e3f59] bg-[#1e3f59]/10 ring-1 ring-[#1e3f59]'
                                                                         : 'border-gray-200 hover:border-[#1e3f59]/40'
                                                                         } ${selectedCourses.length >= 1 && !selectedCourses.includes(course)
-                                                                            ? 'opacity-50 cursor-not-allowed'
+                                                                            ? ''
                                                                             : ''
                                                                         }`}
                                                                 >
@@ -559,6 +546,31 @@ const AdmissionRegistrationFloatingButton = () => {
                             </div>
                         </div>
                     </div>
+                    {isSubmissionSuccess && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                            <div className="bg-white p-8 rounded-lg max-w-md text-center">
+                                <svg className="mx-auto h-12 w-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                                <h3 className="mt-3 text-lg font-medium text-gray-900">Application Submitted!</h3>
+                                <p className="mt-2 text-sm text-gray-500">
+                                    Your entrance exam registration was successful. You'll receive a confirmation email shortly.
+                                </p>
+                                <div className="mt-5">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            closeForm();
+                                            setIsSubmissionSuccess(false);
+                                        }}
+                                        className="px-4 py-2 bg-[#1e3f59] text-white rounded-md hover:bg-[#1A556F] focus:outline-none"
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
         </>
