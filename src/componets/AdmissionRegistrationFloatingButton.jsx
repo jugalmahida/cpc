@@ -20,17 +20,19 @@ const AdmissionRegistrationFloatingButton = () => {
         profileImage: null,
         pdf: null,
         tID: '',
+        gcasNumber: ''
     });
 
     const [formErrors, setFormErrors] = useState({
         name: '',
         email: '',
         mobile: '',
-        profilePhoto: '',
-        marksheet: '',
-        entrancePaymentProof: '',
+        profileImage: '',
+        pdf: '',
+        tID: '',
         department: '',
-        courses: ''
+        courses: '',
+        gcasNumber: ''
     });
 
     // Refs for GSAP Animations
@@ -124,27 +126,63 @@ const AdmissionRegistrationFloatingButton = () => {
     // Validation Helpers
     const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const isValidMobile = (mobile) => /^[0-9]{10}$/.test(mobile);
-    const isValidFile = (file, types, maxSizeMB) =>
-        types.includes(file.type) && file.size <= maxSizeMB * 1024 * 1024;
+
+    // Enhanced File Validation
+    const validateFileSize = (file, maxSizeMB = 1, minSizeKB = 50) => {
+        if (!file) return null;
+
+        const fileSizeKB = file.size / 1024;
+        const fileSizeMB = fileSizeKB / 1024;
+
+        if (fileSizeMB > maxSizeMB) {
+            return `File size (${fileSizeMB.toFixed(2)} MB) exceeds the maximum limit of ${maxSizeMB} MB`;
+        }
+
+        if (fileSizeKB < minSizeKB) {
+            return `File size (${fileSizeKB.toFixed(2)} KB) is smaller than the minimum requirement of ${minSizeKB} KB`;
+        }
+
+        return null;
+    };
+
+    const validateFileType = (file, acceptedTypes) => {
+        if (!file) return null;
+
+        if (!acceptedTypes.includes(file.type)) {
+            const typeNames = acceptedTypes.map(type => {
+                return type.replace('application/', '').replace('image/', '').toUpperCase();
+            }).join('/');
+
+            return `Invalid file type. Please upload a ${typeNames} file`;
+        }
+
+        return null;
+    };
 
     // Form Handlers
     const handleInputChange = (e) => {
         const { name, value, files } = e.target;
+
         if (files) {
             const file = files[0];
             let error = '';
-            if (name === 'profilePhoto' && !isValidFile(file, ['image/jpeg', 'image/png'], 1)) {
-                error = 'Invalid image (JPG/PNG, max 1MB)';
-            } else if (name === 'marksheet' && !isValidFile(file, ['application/pdf'], 1)) {
-                error = 'Invalid PDF (max 1MB)';
+
+            if (name === 'profileImage') {
+                const sizeError = validateFileSize(file);
+                const typeError = validateFileType(file, ['image/jpeg', 'image/png']);
+                error = sizeError || typeError || '';
             }
-            else if (name === 'entrancePaymentProof' && !isValidFile(file, ['image/jpeg', 'image/png', 'application/pdf'], 5)) {
-                error = 'Invalid file (JPG/PNG/PDF, max 1MB)';
+            else if (name === 'pdf') {
+                const sizeError = validateFileSize(file);
+                const typeError = validateFileType(file, ['application/pdf']);
+                error = sizeError || typeError || '';
             }
+
             setFormErrors(prev => ({ ...prev, [name]: error }));
             setFormData(prev => ({ ...prev, [name]: error ? null : file }));
             return;
         }
+
         setFormData(prev => ({ ...prev, [name]: value }));
 
         switch (name) {
@@ -154,8 +192,14 @@ const AdmissionRegistrationFloatingButton = () => {
             case 'email':
                 setFormErrors(prev => ({ ...prev, email: !isValidEmail(value) ? 'Invalid email address' : '' }));
                 break;
-            case 'mobile':
-                setFormErrors(prev => ({ ...prev, mobile: !isValidMobile(value) ? 'Invalid mobile number' : '' }));
+            case 'number':
+                setFormErrors(prev => ({ ...prev, mobile: !isValidMobile(value) ? 'Invalid mobile number (10 digits)' : '' }));
+                break;
+            case 'gcasNumber':
+                setFormErrors(prev => ({ ...prev, gcasNumber: !value.trim() ? 'GCAS Registration Number is required' : '' }));
+                break;
+            case 'tID':
+                setFormErrors(prev => ({ ...prev, tID: !value.trim() ? 'Transaction ID is required' : '' }));
                 break;
         }
     };
@@ -164,15 +208,18 @@ const AdmissionRegistrationFloatingButton = () => {
         const errors = {};
         if (!formData.name.trim()) errors.name = 'Name is required';
         if (!isValidEmail(formData.email)) errors.email = 'Invalid email';
-        if (!isValidMobile(formData.number)) errors.number = 'Invalid mobile';
-        if (!formData.profileImage) errors.profileImage = 'Profile photo required';
-        if (!formData.pdf) errors.pdf = 'Marksheet required';
-        if (!selectedDepartment) errors.departmentName = 'Please select a department';
-        if (selectedCourses.length === 0) errors.courseName = 'Please select one course';
-        if (!formData.tID) errors.tID = 'Payment proof required';
-        setFormErrors(errors);
+        if (!isValidMobile(formData.number)) errors.mobile = 'Invalid mobile number';
+        if (!formData.gcasNumber) errors.gcasNumber = 'GCAS Registration Number is required';
+        if (!formData.profileImage) errors.profileImage = 'Profile photo is required';
+        if (!formData.pdf) errors.pdf = 'Marksheet is required';
+        if (!selectedDepartment) errors.department = 'Please select a department';
+        if (selectedCourses.length === 0) errors.courses = 'Please select one course';
+        if (!formData.tID) errors.tID = 'Transaction ID is required';
+
+        setFormErrors(prev => ({ ...prev, ...errors }));
         return Object.keys(errors).length === 0;
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!validateForm()) return;
@@ -209,11 +256,42 @@ const AdmissionRegistrationFloatingButton = () => {
         }
     };
 
+    // Display file upload error with better UX
+    const renderFileUploadField = (fieldName, label, accept, requirements) => {
+        const file = formData[fieldName];
+        const error = formErrors[fieldName];
+
+        return (
+            <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">
+                    {label} * <span className="text-gray-500 text-xs">{requirements}</span>
+                </label>
+                <div className="relative">
+                    <input
+                        type="file"
+                        name={fieldName}
+                        accept={accept}
+                        onChange={handleInputChange}
+                        className="absolute opacity-0 w-full h-full cursor-pointer"
+                    />
+                    <div className={`h-14 flex items-center justify-center rounded-lg border-2 border-dashed bg-gray-50 
+                        ${error ? 'border-red-400 bg-red-50' : 'border-gray-200 hover:border-[#1e3f59]'} transition-colors`}>
+                        <p className={`text-sm ${error ? 'text-red-600' : 'text-gray-600'}`}>
+                            {file?.name || `Click to upload ${label.toLowerCase()}`}
+                        </p>
+                    </div>
+                </div>
+                {error && (
+                    <p className="text-red-500 text-xs mt-1">{error}</p>
+                )}
+            </div>
+        );
+    };
 
     return (
         <>
-            {/* Floating Button */}
-            <div className="fixed left-5 bottom-14 md:bottom-auto md:top-5 z-50">
+            {/* Floating Button - Bottom left on mobile, left top on desktop */}
+            <div className="fixed bottom-7 left-4 md:left-6 md:top-6 w-45 md:bottom-auto z-40">
                 <div className="relative">
                     <div className={`absolute inset-0 rounded-xl transition-all duration-700 ${isGlowing ? 'bg-blue-400 blur-md opacity-50 scale-110'
                         : 'bg-transparent blur-none opacity-0 scale-100'
@@ -221,10 +299,10 @@ const AdmissionRegistrationFloatingButton = () => {
                     <button
                         onClick={openForm}
                         className="relative bg-[#1e3f59] hover:bg-[#1A556F] text-white font-medium py-3 px-6 rounded-xl 
-                        shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center text-sm md:text-base"
+        shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center md:text-base"
                     >
-                        <span className="relative z-10">Entrance Exam Registration
-
+                        <span className="relative z-10 lg:text-lg text-xs ">
+                            Entrance Exam Registration
                         </span>
                     </button>
                 </div>
@@ -259,7 +337,6 @@ const AdmissionRegistrationFloatingButton = () => {
                                 <form className="space-y-8">
                                     <div className="grid grid-cols-1 gap-8">
                                         {/* Entrance Fee Section */}
-                                        {/* Entrance Fee Section */}
                                         <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg">
                                             <div className="space-y-3">
                                                 <p className="font-semibold text-yellow-700 text-sm">ENTRANCE EXAM FEE</p>
@@ -281,7 +358,7 @@ const AdmissionRegistrationFloatingButton = () => {
                                                                         {/* QR Code */}
                                                                         <div className="shrink-0">
                                                                             <img
-                                                                                src="/payment.jpg"
+                                                                                src="/payment.png"
                                                                                 alt="UPI Payment QR Code"
                                                                                 className="w-36 h-36 border-2 border-gray-100 rounded-lg p-1.5 bg-white"
                                                                             />
@@ -331,8 +408,8 @@ const AdmissionRegistrationFloatingButton = () => {
                                                                     type="text"
                                                                     value={formData.tID}
                                                                     onChange={handleInputChange}
-                                                                    className="w-full px-4 py-2.5 rounded-lg bg-gray-50 border border-gray-200
-                            focus:ring-2 focus:ring-[#1e3f59] focus:border-transparent"
+                                                                    className={`w-full px-4 py-2.5 rounded-lg bg-gray-50 border ${formErrors.tID ? 'border-red-500' : 'border-gray-200'} 
+                                                                    focus:ring-2 focus:ring-[#1e3f59] focus:border-transparent`}
                                                                     placeholder="Enter UPI Transaction ID"
                                                                 />
                                                                 {formErrors.tID && (
@@ -361,11 +438,14 @@ const AdmissionRegistrationFloatingButton = () => {
                                                             type={field.type}
                                                             value={formData[field.name]}
                                                             onChange={handleInputChange}
-                                                            className={`w-full px-4 py-2.5 rounded-lg bg-gray-50 border ${formErrors[field.name] ? 'border-red-500' : 'border-gray-200'
+                                                            className={`w-full px-4 py-2.5 rounded-lg bg-gray-50 border ${(field.name === 'number' && formErrors.mobile) || formErrors[field.name]
+                                                                ? 'border-red-500' : 'border-gray-200'
                                                                 } focus:ring-2 focus:ring-[#1e3f59] focus:border-transparent`}
                                                             placeholder={field.placeholder}
                                                         />
-                                                        {formErrors[field.name] && (
+                                                        {field.name === 'number' && formErrors.mobile ? (
+                                                            <p className="text-red-500 text-xs mt-1">{formErrors.mobile}</p>
+                                                        ) : formErrors[field.name] && (
                                                             <p className="text-red-500 text-xs mt-1">{formErrors[field.name]}</p>
                                                         )}
                                                     </div>
@@ -377,43 +457,8 @@ const AdmissionRegistrationFloatingButton = () => {
                                         <div className="space-y-6">
                                             <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Document Uploads</h4>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                {[
-                                                    {
-                                                        label: '12th Marksheet',
-                                                        name: 'pdf',  // Match backend field name
-                                                        accept: 'application/pdf',
-                                                        requirements: '(PDF, max 1MB)'
-                                                    },
-                                                    {
-                                                        label: 'Profile Photo',
-                                                        name: 'profileImage',  // Match backend field name
-                                                        accept: 'image/*',
-                                                        requirements: '(JPG/PNG, max 1MB)'
-                                                    },
-                                                ].map((file) => (
-                                                    <div key={file.name} className="space-y-2">
-                                                        <label className="block text-sm font-medium text-gray-700">
-                                                            {file.label} * <span className="text-gray-500 text-xs">{file.requirements}</span>
-                                                        </label>
-                                                        <div className="relative">
-                                                            <input
-                                                                type="file"
-                                                                name={file.name}
-                                                                accept={file.accept}
-                                                                onChange={handleInputChange}
-                                                                className="absolute opacity-0 w-full h-full cursor-pointer"
-                                                            />
-                                                            <div className="h-14 flex items-center justify-center rounded-lg border-2 border-dashed bg-gray-50 border-gray-200 hover:border-[#1e3f59] transition-colors">
-                                                                <p className="text-gray-600 text-sm">
-                                                                    {formData[file.name]?.name || `Click to upload ${file.label.toLowerCase()}`}
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                        {formErrors[file.name] && (
-                                                            <p className="text-red-500 text-xs mt-1">{formErrors[file.name]}</p>
-                                                        )}
-                                                    </div>
-                                                ))}
+                                                {renderFileUploadField('pdf', '12th Marksheet', 'application/pdf', '(PDF, max 1MB)')}
+                                                {renderFileUploadField('profileImage', 'Profile Photo', 'image/*', '(JPG/PNG, max 1MB)')}
                                             </div>
                                         </div>
 
@@ -473,44 +518,6 @@ const AdmissionRegistrationFloatingButton = () => {
                                             </div>
                                         </div>
 
-                                        {/* Entrance Fee Section */}
-                                        <div className="space-y-6">
-
-
-
-
-                                            {/* Payment Proof Upload */}
-                                            {/* <div className="grid grid-cols-1 gap-4">
-                                                <div className="space-y-2">
-                                                    <label className="block text-sm font-semibold text-gray-700">
-                                                        Payment Proof*
-                                                    </label>
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                        {[
-                                                            { label: 'Transaction ID*', name: 'tID', type: 'text', placeholder: 'Enter Transaction ID' },
-
-                                                        ].map((field) => (
-                                                            <div key={field.tID} className="space-y-2">
-                                                                <label className="block text-sm font-medium text-gray-700">{field.label}</label>
-                                                                <input
-                                                                    name={field.name}
-                                                                    type={field.type}
-                                                                    value={formData[field.name]}
-                                                                    onChange={handleInputChange}
-                                                                    className={`w-full px-4 py-2.5 rounded-lg bg-gray-50 border ${formErrors[field.name] ? 'border-red-500' : 'border-gray-200'
-                                                                        } focus:ring-2 focus:ring-[#1e3f59] focus:border-transparent`}
-                                                                    placeholder={field.placeholder}
-                                                                />
-                                                                {formErrors[field.name] && (
-                                                                    <p className="text-red-500 text-xs mt-1">{formErrors[field.name]}</p>
-                                                                )}
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            </div> */}
-                                        </div>
-
                                         {/* Important Notes */}
                                         <div className="bg-blue-50 border-l-4 border-[#1e3f59] p-4 rounded-lg space-y-2">
                                             <p className="text-sm font-semibold text-[#1e3f59]">IMPORTANT NOTES</p>
@@ -518,7 +525,8 @@ const AdmissionRegistrationFloatingButton = () => {
                                                 <li>All information submitted is final and cannot be modified</li>
                                                 <li>Ensure documents are clear and valid</li>
                                                 <li>Updates will be sent to your registered email</li>
-                                                <li>Invalid submissions will be rejected</li>
+                                                <li>Invalid, Incomplete, Wrongful submissions will be rejected</li>
+                                                <li>File uploads must be less than 1MB in size</li>
                                             </ul>
                                         </div>
                                     </div>

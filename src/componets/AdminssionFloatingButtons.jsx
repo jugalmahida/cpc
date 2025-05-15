@@ -28,7 +28,7 @@ const scrollbarStyles = `
 export default function AdmissionFloatingButtons() {
   const [isGlowing, setIsGlowing] = useState(true);
   // Initialize isOpen based on localStorage - will be false initially until checked in useEffect
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const navigate = useNavigate();
 
   // Refs for GSAP animations
@@ -117,20 +117,30 @@ export default function AdmissionFloatingButtons() {
     }, "-=0.2");
   };
 
+  const entranceGuidelinesOnClick = () => {
+    window.open("https://api.gucpc.in/uploads/announcementFile/announcementFile-23f1474b96f0aba26bdc198da4d4c740.pdf", "_blank");
+
+  }
+  const meritGuidelinesOnClick = () => {
+    window.open("https://api.gucpc.in/uploads/announcementFile/announcementFile-ea5dde10e65d768e8421392a0e7000a0.pdf", "_blank");
+
+  }
+
+
   // Effect to handle the automatic popup opening on first load
-  useEffect(() => {
-    // Check if the flag exists in localStorage
-    const hasSeen = localStorage.getItem('hasSeenAdmissionPopup');
+  // useEffect(() => {
+  //   // Check if the flag exists in localStorage
+  //   const hasSeen = localStorage.getItem('hasSeenAdmissionPopup');
 
-    // If the flag is not set (or is not 'true'), open the popup and set the flag
-    if (hasSeen !== 'true') {
-      setIsOpen(true);
-      // Set the flag so it doesn't open automatically next time
-      localStorage.setItem('hasSeenAdmissionPopup', 'true');
-    }
+  //   // If the flag is not set (or is not 'true'), open the popup and set the flag
+  //   if (hasSeen !== 'true') {
+  //     setIsOpen(true);
+  //     // Set the flag so it doesn't open automatically next time
+  //     localStorage.setItem('hasSeenAdmissionPopup', 'true');
+  //   }
 
-    // This effect should only run once on mount
-  }, []); // Empty dependency array ensures it runs only on mount
+  //   // This effect should only run once on mount
+  // }, []); // Empty dependency array ensures it runs only on mount
 
   // Effect for GSAP animations when popup opens
   useEffect(() => {
@@ -222,7 +232,7 @@ export default function AdmissionFloatingButtons() {
   return (
     <>
       {/* Floating Button */}
-      <div className="fixed left-0 bottom-5 md:bottom-auto md:top-24 flex flex-col gap-2 md:gap-4 z-50 m-2 md:m-4 lg:m-6">
+      {/* <div className="fixed left-0 bottom-5 md:bottom-auto md:top-24 flex flex-col gap-2 md:gap-4 z-50 m-2 md:m-4 lg:m-6">
         <div className="relative">
           <div className={`absolute inset-0 rounded-xl md:rounded-2xl transition-all duration-700 ${isGlowing
             ? 'bg-slate-400 blur sm:blur-md opacity-70 scale-105 md:scale-110'
@@ -235,7 +245,7 @@ export default function AdmissionFloatingButtons() {
             <span className="relative z-10 text-center leading-tight">Admission Open 2025</span>
           </button>
         </div>
-      </div>
+      </div> */}
 
       {/* Popup Modal */}
       {isOpen && (
@@ -302,7 +312,7 @@ export default function AdmissionFloatingButtons() {
                     </p>
                     <div className="flex justify-center mt-2">
                       <button
-                        className="bg-yellow-500 text-slate-800 font-bold text-xs sm:text-sm py-1 px-2 rounded-full hover:bg-yellow-400 transition-colors"
+                        className="bg-yellow-500 text-slate-800 font-bold text-xs sm:text-sm py-1 px-2 rounded-full hover:bg-yellow-400 transition-colors" onClick={entranceGuidelinesOnClick}
                       >
                         View Guidelines
                       </button>
@@ -316,7 +326,7 @@ export default function AdmissionFloatingButtons() {
                     </p>
                     <div className="flex justify-center mt-2">
                       <button
-                        className="bg-yellow-500 text-slate-800 font-bold text-xs sm:text-sm py-1 px-2 rounded-full hover:bg-yellow-400 transition-colors"
+                        className="bg-yellow-500 text-slate-800 font-bold text-xs sm:text-sm py-1 px-2 rounded-full hover:bg-yellow-400 transition-colors" onClick={meritGuidelinesOnClick}
                       >
                         View Guidelines
                       </button>
