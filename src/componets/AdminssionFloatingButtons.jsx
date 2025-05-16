@@ -289,7 +289,7 @@ export default function AdmissionFloatingButtons() {
 
                 {/* Registration Link Section */}
                 <div
-                  className="bg-slate-700 p-3 rounded-lg flex flex-col sm:flex-row items-center justify-between 
+                  className="bg-slate-700 p-3 rounded-lg flex flex-col sm:flex-row items-center justify-between
                 text-sm md:text-base mb-3"
                 > {/* Background and layout for the link */}
                   <span className="font-semibold text-gray-300 mb-1 sm:mb-0 mr-2">Registration Link:</span> {/* Text label */}
@@ -360,6 +360,10 @@ export default function AdmissionFloatingButtons() {
                     <li className="flex items-start">
                       <span className="text-yellow-400 mr-2">•</span>
                       <span>Department of Mobile Application and Technologies (All Courses)</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-yellow-400 mr-2">•</span>
+                      <span>Department of Management (All Courses)</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-yellow-400 mr-2">•</span>

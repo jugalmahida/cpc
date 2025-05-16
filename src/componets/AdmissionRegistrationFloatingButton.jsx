@@ -457,7 +457,7 @@ const AdmissionRegistrationFloatingButton = () => {
                                         <div className="space-y-6">
                                             <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Document Uploads</h4>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                {renderFileUploadField('pdf', '12th Marksheet', 'application/pdf', '(PDF, max 1MB)')}
+                                                {renderFileUploadField('pdf', '12th/Final Year Marksheet', 'application/pdf', '(PDF, max 1MB)')}
                                                 {renderFileUploadField('profileImage', 'Profile Photo', 'image/*', '(JPG/PNG, max 1MB)')}
                                             </div>
                                         </div>
@@ -522,13 +522,31 @@ const AdmissionRegistrationFloatingButton = () => {
                                         <div className="bg-blue-50 border-l-4 border-[#1e3f59] p-4 rounded-lg space-y-2">
                                             <p className="text-sm font-semibold text-[#1e3f59]">IMPORTANT NOTES</p>
                                             <ul className="list-disc pl-5 text-gray-700 space-y-1 text-sm">
+                                                <li >
+                                                    <span>Last Date for Online Registration (DEE):</span>
+                                                    <span className="font-semibold">22nd May 2025</span>
+                                                </li>
+                                                <li >
+                                                    <span>Aptitude for Design & Creativity (ADC):</span>
+                                                    <span className="font-semibold">24th May 2025</span>
+                                                </li>
+                                                <li >
+                                                    <span>Practical Test:</span>
+                                                    <span className="font-semibold">24th May 2025</span>
+                                                </li>
+                                                <li >
+                                                    <span>Portfolio Review & Personal Interview:</span>
+                                                    <span className="font-semibold">25th May 2025</span>
+                                                </li>
                                                 <li>All information submitted is final and cannot be modified</li>
                                                 <li>Ensure documents are clear and valid</li>
                                                 <li>Updates will be sent to your registered email</li>
                                                 <li>Invalid, Incomplete, Wrongful submissions will be rejected</li>
                                                 <li>File uploads must be less than 1MB in size</li>
+
                                             </ul>
                                         </div>
+
                                     </div>
                                 </form>
                             </div>
