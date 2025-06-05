@@ -118,11 +118,11 @@ export default function AdmissionFloatingButtons() {
   };
 
   const entranceGuidelinesOnClick = () => {
-    window.open("https://api.gucpc.in/uploads/announcementFile/announcementFile-23f1474b96f0aba26bdc198da4d4c740.pdf", "_blank");
+    window.open("https://api.gucpc.in/uploads/announcementFile/announcementFile-bee0caa36f21a49a80cf11a36970a76c.pdf", "_blank");
 
   }
   const meritGuidelinesOnClick = () => {
-    window.open("https://api.gucpc.in/uploads/announcementFile/announcementFile-ea5dde10e65d768e8421392a0e7000a0.pdf", "_blank");
+    window.open("https://api.gucpc.in/uploads/announcementFile/announcementFile-d8ba04a51968d672bf8e46bcb80df4b8.pdf", "_blank");
 
   }
 

@@ -10,6 +10,7 @@ const AdmissionRegistrationFloatingButton = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedDepartment, setSelectedDepartment] = useState(null);
     const [selectedCourses, setSelectedCourses] = useState([]);
+    const [selectedExamDate, setSelectedExamDate] = useState('');
     const [isSubmissionSuccess, setIsSubmissionSuccess] = useState(false);
 
     // Form Data & Errors
@@ -32,6 +33,7 @@ const AdmissionRegistrationFloatingButton = () => {
         tID: '',
         department: '',
         courses: '',
+        examDate: '',
         gcasNumber: ''
     });
 
@@ -41,6 +43,12 @@ const AdmissionRegistrationFloatingButton = () => {
     const headerRef = useRef(null);
     const contentRef = useRef(null);
     const footerRef = useRef(null);
+
+    // Exam Dates Data
+    const examDates = [
+        { id: 1, date: 'Tuesday, 10-06-2025', value: '2025-06-10' },
+        { id: 2, date: 'Friday, 13-06-2025', value: '2025-06-13' }
+    ];
 
     // Department Data
     const staticDepartments = [
@@ -121,6 +129,12 @@ const AdmissionRegistrationFloatingButton = () => {
             return [course]; // Always replace with the new selection
         });
         setFormErrors(prev => ({ ...prev, courses: null }));
+    };
+
+    // Exam Date Selection
+    const handleExamDateSelect = (examDate) => {
+        setSelectedExamDate(examDate);
+        setFormErrors(prev => ({ ...prev, examDate: null }));
     };
 
     // Validation Helpers
@@ -214,6 +228,7 @@ const AdmissionRegistrationFloatingButton = () => {
         if (!formData.pdf) errors.pdf = 'Marksheet is required';
         if (!selectedDepartment) errors.department = 'Please select a department';
         if (selectedCourses.length === 0) errors.courses = 'Please select one course';
+        if (!selectedExamDate) errors.examDate = 'Please select an exam date';
         if (!formData.tID) errors.tID = 'Transaction ID is required';
 
         setFormErrors(prev => ({ ...prev, ...errors }));
@@ -236,6 +251,7 @@ const AdmissionRegistrationFloatingButton = () => {
             formPayload.append('pdf', formData.pdf);
             formPayload.append('departmentName', selectedDepartment.name);
             formPayload.append('courseName', selectedCourses[0] || '');
+            formPayload.append('examDate', selectedExamDate);
 
             await DataService.examRegistration(formPayload);
 
@@ -518,26 +534,51 @@ const AdmissionRegistrationFloatingButton = () => {
                                             </div>
                                         </div>
 
+                                        {/* Exam Date Selection */}
+                                        <div className="space-y-6">
+                                            <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Exam Date Selection</h4>
+                                            <div className="space-y-2">
+                                                <label className="block text-sm font-medium text-gray-700">Select Exam Date *</label>
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                    {examDates.map((examDate) => (
+                                                        <button
+                                                            key={examDate.id}
+                                                            type="button"
+                                                            onClick={() => handleExamDateSelect(examDate.value)}
+                                                            className={`p-4 text-left rounded-lg border transition-all ${selectedExamDate === examDate.value
+                                                                ? 'border-[#1e3f59] bg-[#1e3f59]/10 ring-1 ring-[#1e3f59]'
+                                                                : 'border-gray-200 hover:border-[#1e3f59]/40'
+                                                                }`}
+                                                        >
+                                                            <div className="flex items-center justify-between">
+                                                                <span className="text-sm font-medium text-gray-800">{examDate.date}</span>
+                                                                {selectedExamDate === examDate.value && (
+                                                                    <svg className="w-5 h-5 text-[#1e3f59]" fill="currentColor" viewBox="0 0 20 20">
+                                                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                                    </svg>
+                                                                )}
+                                                            </div>
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                                {formErrors.examDate && (
+                                                    <p className="text-red-500 text-xs mt-1">{formErrors.examDate}</p>
+                                                )}
+                                            </div>
+                                        </div>
+
                                         {/* Important Notes */}
                                         <div className="bg-blue-50 border-l-4 border-[#1e3f59] p-4 rounded-lg space-y-2">
                                             <p className="text-sm font-semibold text-[#1e3f59]">IMPORTANT NOTES</p>
                                             <ul className="list-disc pl-5 text-gray-700 space-y-1 text-sm">
-                                                <li >
+                                                <li>
                                                     <span>Last Date for Online Registration (DEE):</span>
-                                                    <span className="font-semibold">22nd May 2025</span>
+                                                    <span className="font-semibold">To be announced</span>
                                                 </li>
-                                                <li >
-                                                    <span>Aptitude for Design & Creativity (ADC):</span>
-                                                    <span className="font-semibold">24th May 2025</span>
-                                                </li>
-                                                <li >
-                                                    <span>Practical Test:</span>
-                                                    <span className="font-semibold">24th May 2025</span>
-                                                </li>
-                                                <li >
-                                                    <span>Portfolio Review & Personal Interview:</span>
-                                                    <span className="font-semibold">25th May 2025</span>
-                                                </li>
+                                                {/* <li>
+                                                    <span>Date of Design Entrance Examination (DEE):</span>
+                                                    <span className="font-semibold">To be announced</span>
+                                                </li> */}
                                                 <li>All information submitted is final and cannot be modified</li>
                                                 <li>Ensure documents are clear and valid</li>
                                                 <li>Updates will be sent to your registered email</li>
