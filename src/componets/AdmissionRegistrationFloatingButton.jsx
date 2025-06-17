@@ -46,8 +46,8 @@ const AdmissionRegistrationFloatingButton = () => {
 
     // Exam Dates Data
     const examDates = [
-        { id: 1, date: 'Tuesday, 10-06-2025', value: '2025-06-10' },
-        { id: 2, date: 'Friday, 13-06-2025', value: '2025-06-13' }
+        { id: 1, date: 'Friday, 20-06-2025', value: '2025-06-20' },
+        { id: 2, date: 'Tuesday, 24-06-2025', value: '2025-06-24' }
     ];
 
     // Department Data
