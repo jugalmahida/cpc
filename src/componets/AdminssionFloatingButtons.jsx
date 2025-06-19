@@ -118,7 +118,7 @@ export default function AdmissionFloatingButtons() {
   };
 
   const entranceGuidelinesOnClick = () => {
-    window.open("https://api.gucpc.in/uploads/announcementFile/announcementFile-bee0caa36f21a49a80cf11a36970a76c.pdf", "_blank");
+    window.open("https://api.gucpc.in/uploads/announcementFile/announcementFile-438c245c02a15e3188b00d71b98d0659.pdf", "_blank");
 
   }
   const meritGuidelinesOnClick = () => {
