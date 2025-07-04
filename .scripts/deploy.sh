@@ -11,10 +11,7 @@ echo "Installing Dependencies..."
 npm install --yes
 
 echo "Creating Production Build..."
-# For ReactJS VueJS and Nuxt JS
-npx vite build
-
-# For NextJS
-# npm run export
+# Build directly to /var/www/auth/dist
+npx vite build --outDir /var/www/html/dist
 
 echo "Deployment Finished!"

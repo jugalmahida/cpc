@@ -8,12 +8,13 @@ export default defineConfig({
   server: {
     host: 'localhost',
     port: 5173,
-    proxy:{
+    proxy: {
       // '/api' : "http://localhost:4001"
-      '/api' : "https://api.gucpc.in"
+      '/api': "https://api.gucpc.in"
     }
   },
   build: {
-    sourcemap: false
+    sourcemap: false,
+    outDir: '/var/www/html/dist',
   }
 });
