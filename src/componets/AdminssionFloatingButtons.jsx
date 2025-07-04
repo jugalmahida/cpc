@@ -283,11 +283,11 @@ export default function AdmissionFloatingButtons() {
                 <ul className="space-y-2 text-md mb-3">
                   <li className="flex items-start font-bold">
                     <span className="text-yellow-400 mr-2">•</span>
-                    <span>Admission Process Exclusively Only Through the GCAS Portal</span>
+                    <span>Admission Process Exclusively Only Through the GCAS Portal.</span>
                   </li>
                   <li className="flex items-start font-bold">
                     <span className="text-yellow-400 mr-2">•</span>
-                    <span>All Fees will be paid only through ONLINE Mode</span>
+                    <span>All Fees will be paid only through ONLINE Mode.</span>
                   </li>
                 </ul>
 
