@@ -66,12 +66,13 @@ function App() {
 
   useEffect(() => {
     // Disable right-click
-    document.addEventListener('contextmenu', (e) => {
+    function handleContextMenu(e) {
       e.preventDefault();
-    });
+    }
+    document.addEventListener('contextmenu', handleContextMenu);
 
     // Disable developer tool shortcuts
-    const handleKeyDown = (e) => {
+    function handleKeyDown(e) {
       if (
         (e.ctrlKey && e.shiftKey && e.key === 'I') ||
         (e.ctrlKey && e.shiftKey && e.key === 'J') ||
@@ -82,15 +83,12 @@ function App() {
       ) {
         e.preventDefault();
       }
-    };
-
+    }
     document.addEventListener('keydown', handleKeyDown);
 
     // Cleanup event listeners
     return () => {
-      document.removeEventListener('contextmenu', (e) => {
-        e.preventDefault();
-      });
+      document.removeEventListener('contextmenu', handleContextMenu);
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
