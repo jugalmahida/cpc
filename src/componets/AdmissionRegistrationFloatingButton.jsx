@@ -357,9 +357,9 @@ const AdmissionRegistrationFloatingButton = () => {
                                             <div className="space-y-3">
                                                 <p className="font-semibold text-yellow-700 text-sm">ENTRANCE EXAM FEE</p>
                                                 <div className="text-gray-700 text-sm space-y-2">
-                                                    <p>• Mandatory ₹1,000 entrance fee payment required</p>
-                                                    <p>• This registration is for Department of Animation & School of Design courses only</p>
-                                                    <p>• Payment is non refundable</p>
+                                                    <p>• Mandatory ₹1,000 entrance fee payment required.</p>
+                                                    <p>• This registration is for Department of Animation & School of Design courses only.</p>
+                                                    <p>• Payment is non refundable.</p>
                                                     <div className="pt-2">
                                                         <div className="flex flex-col gap-4">
                                                             {/* Payment Methods */}
@@ -573,17 +573,17 @@ const AdmissionRegistrationFloatingButton = () => {
                                             <ul className="list-disc pl-5 text-gray-700 space-y-1 text-sm">
                                                 <li>
                                                     <span>Last Date for Online Registration (DEE):</span>
-                                                    <span className="font-semibold">To be announced</span>
+                                                    <span className="font-semibold">To be announced.</span>
                                                 </li>
                                                 {/* <li>
                                                     <span>Date of Design Entrance Examination (DEE):</span>
                                                     <span className="font-semibold">To be announced</span>
                                                 </li> */}
-                                                <li>All information submitted is final and cannot be modified</li>
-                                                <li>Ensure documents are clear and valid</li>
-                                                <li>Updates will be sent to your registered email</li>
-                                                <li>Invalid, Incomplete, Wrongful submissions will be rejected</li>
-                                                <li>File uploads must be less than 1MB in size</li>
+                                                <li>All information submitted is final and cannot be modified.</li>
+                                                <li>Ensure documents are clear and valid.</li>
+                                                <li>Updates will be sent to your registered email.</li>
+                                                <li>Invalid, Incomplete, Wrongful submissions will be rejected.</li>
+                                                <li>File uploads must be less than 1MB in size.</li>
 
                                             </ul>
                                         </div>
