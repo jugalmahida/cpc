@@ -172,7 +172,7 @@ export default function Home() {
     <div className="relative bg-white m-0 p-0 overflow-x-hidden">
 
       <AdmissionFloatingButtons />
-      {/* <AdmissionRegistrationFloatingButton /> */}
+      <AdmissionRegistrationFloatingButton />
 
       <Header transparent={true} />
 
