@@ -16,7 +16,7 @@ import GetInTouch from "../componets/GetInTouch";
 import neerjamaam from "/images/neerjamaam.jpg";
 import AboutCpcImage from "/images/aboutcpc.jpg";
 import AboutGuImage from "/images/aboutguImage.png";
-import registrar from "/images/registrar.jpg";
+import registrar from "/images/registrar1.jpg";
 
 // Student Grid
 import im1 from "/images/studentgrid/im1.jpeg";
