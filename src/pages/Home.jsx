@@ -301,9 +301,9 @@ export default function Home() {
                 <img
                   className="h-40 w-40 object-cover mb-4 rounded-lg"
                   src={registrar}
-                  alt="Dr. Paresh Prajapati"
+                  alt="Dr. Piyush M Patel"
                 />
-                <h2 className="text-xl font-bold text-[#1A556F]">Dr. Paresh Prajapati</h2>
+                <h2 className="text-xl font-bold text-[#1A556F]">Dr. Piyush M Patel</h2>
                 <p className="text-sm font-semibold text-gray-600">Registrar</p>
                 <p className="text-sm text-gray-500 mb-2">Gujarat University</p>
                 <p className="text-sm text-gray-500">View More</p>
