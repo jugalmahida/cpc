@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import clockTowerIcon from "/images/crossarrow.png"; // Import the image
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
-import dataService from "../api/dataService"; // Import your dataService
+import dataService from "../api/dataService";
 import logo from "/cpclogo.png"; 
 
 export default function Layout() {
